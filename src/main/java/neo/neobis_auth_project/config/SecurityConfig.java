@@ -35,7 +35,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration corsConfig = new CorsConfiguration();
-                    corsConfig.addAllowedOrigin("https://neotravel-production-c5db.up.railway.app");
+                    corsConfig.addAllowedOrigin("https://neobis-auth-project.up.railway.app");
                     corsConfig.addAllowedOrigin("https://localhost:3000");
                     corsConfig.addAllowedHeader("*");
                     corsConfig.addAllowedMethod("*");
