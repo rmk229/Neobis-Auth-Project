@@ -42,9 +42,14 @@ public class SecurityConfig {
                     return corsConfig;
                 }))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers( "/api/**", "/swagger-ui/**", "/v3/**").permitAll()
-                        .requestMatchers("/api/trips/**").hasAnyAuthority("USER","ADMIN")
-                        .anyRequest().permitAll())
+                        .requestMatchers(
+                                "/",
+                                "/api/**",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**")
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated())
                 .sessionManagement((sessionManagement) ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
