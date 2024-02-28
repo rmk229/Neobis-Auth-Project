@@ -2,7 +2,6 @@ package neo.neobis_auth_project.api;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.security.PermitAll;
 import lombok.RequiredArgsConstructor;
 import neo.neobis_auth_project.dto.AuthenticationSignInResponse;
 import neo.neobis_auth_project.dto.AuthenticationSignUpResponse;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/users")
 @Tag(name = "User Api")
 @CrossOrigin(origins = "*", maxAge = 3600)
-@PermitAll
 public class UserApi {
 
     private final UserService userService;
