@@ -18,7 +18,7 @@ public class SwaggerConfig {
         return new OpenAPI()
                 .components(new Components()
                         .addSecuritySchemes(API_KEY, apiKeySecuritySchema()))
-                .info(new Info().title("Travel App"))
+                .info(new Info().title("Neo-Auth-Project"))
                 .security(Collections.singletonList(new SecurityRequirement().addList(API_KEY)));
     }
 
