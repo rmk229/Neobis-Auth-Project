@@ -11,10 +11,9 @@ import neo.neobis_auth_project.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("api/auth")
 @RequiredArgsConstructor
-@RequestMapping("/api/users")
-@Tag(name = "User Api")
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = {"https://neobis-auth-project.up.railway.app", "http://localhost:49310"})
 public class UserApi {
 
     private final UserService userService;
