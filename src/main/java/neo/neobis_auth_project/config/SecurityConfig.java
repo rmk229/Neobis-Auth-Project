@@ -43,7 +43,7 @@ public class SecurityConfig {
                         authorizeHttpRequests
                                 .requestMatchers(
                                         "/",
-                                        "/api/**",
+                                        "/api/users/**",
                                         "/swagger-ui/**",
                                         "/v3/api-docs/**")
                                 .permitAll()
