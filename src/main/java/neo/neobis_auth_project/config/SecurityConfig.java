@@ -20,6 +20,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -34,9 +37,11 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration corsConfig = new CorsConfiguration();
-                    corsConfig.addAllowedHeader("*");
-                    corsConfig.addAllowedMethod("*");
-                    corsConfig.addAllowedOrigin("*");
+                    corsConfig.setAllowedOrigins(Arrays.asList("*"));
+                    corsConfig.setAllowedMethods(Arrays.asList("*"));
+                    corsConfig.setAllowedHeaders(Arrays.asList("*"));
+                    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+                    source.registerCorsConfiguration("/**", corsConfig);
                     return corsConfig;
                 }))
                 .authorizeHttpRequests((authorizeHttpRequests) ->
@@ -45,17 +50,7 @@ public class SecurityConfig {
                                         "/",
                                         "/api/users/**",
                                         "/swagger-ui/**",
-                                        "/v3/api-docs/**",
-                                        "/v2/api-docs",
-                                        "/v3/api-docs",
-                                        "/v3/api-docs/**",
-                                        "/swagger-resources",
-                                        "/swagger-resources/**",
-                                        "/configuration/ui",
-                                        "/configuration/security",
-                                        "/swagger-ui/**",
-                                        "/webjars/**",
-                                        "/swagger-ui.html")
+                                        "/v3/api-docs/**")
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated())
