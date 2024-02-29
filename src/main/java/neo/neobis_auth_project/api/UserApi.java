@@ -2,6 +2,7 @@ package neo.neobis_auth_project.api;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import neo.neobis_auth_project.dto.AuthenticationSignInResponse;
 import neo.neobis_auth_project.dto.AuthenticationSignUpResponse;
@@ -21,13 +22,13 @@ public class UserApi {
 
     @PostMapping("/signIn")
     @Operation(summary = "Вход в свой аккаунт")
-    public AuthenticationSignInResponse signIn(@RequestBody SignInRequest signInRequest) {
+    public AuthenticationSignInResponse signIn(@RequestBody @Valid SignInRequest signInRequest) {
         return userService.signIn(signInRequest);
     }
 
     @PostMapping("/signUp")
     @Operation(summary = "Зарегистрироваться", description = "Регистрация  аккаунта")
-    public AuthenticationSignUpResponse signUp(@RequestBody SignUpRequest signUpRequest) {
+    public AuthenticationSignUpResponse signUp(@RequestBody @Valid SignUpRequest signUpRequest) {
         return userService.signUp(signUpRequest);
     }
 }

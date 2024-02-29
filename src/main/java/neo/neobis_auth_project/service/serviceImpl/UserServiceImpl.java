@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import neo.neobis_auth_project.config.JwtService;
+import neo.neobis_auth_project.config.senderConfig.EmailSenderConfig;
 import neo.neobis_auth_project.dto.AuthenticationSignInResponse;
 import neo.neobis_auth_project.dto.AuthenticationSignUpResponse;
 import neo.neobis_auth_project.dto.SignInRequest;
@@ -19,6 +20,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
 
 @RequiredArgsConstructor
 @Service
@@ -29,6 +31,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final EmailSenderConfig emailSenderConfig;
     @Override
     public AuthenticationSignUpResponse signUp(SignUpRequest request) {
         if (userRepository.existsUserByEmail(request.getEmail())) {
@@ -40,9 +43,11 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(Role.USER);
         userRepository.save(user);
-
         log.info("Пользователь успешно сохранен с идентификатором:" + user.getEmail());
         String token = jwtService.generateToken(user);
+
+        Context context = new Context();
+        sendToUserRegistry(user.getEmail(), "Успешно зарегистрирован!", context);
         return new AuthenticationSignUpResponse(
                 user.getUserId(),
                 token,
@@ -74,4 +79,8 @@ public class UserServiceImpl implements UserService {
                     .role(user.getRole())
                     .build();
         }
+
+    private void sendToUserRegistry(String email, String subject, Context context) {
+        emailSenderConfig.sendEmailWithHTMLTemplate(email,"nurmukhamedalymbaiuulu064@gmail.com", subject, "userRegistry", context);
+    }
     }
