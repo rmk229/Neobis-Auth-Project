@@ -13,7 +13,7 @@ import static java.lang.annotation.ElementType.*;
 @Constraint(validatedBy = EmailValidator.class)
 @Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE})
 public @interface EmailValidation {
-    String message() default "Адрес электронной почты должен заканчиваться на 'gmail.com' или 'mail.ru' и содержать @.";
+    String message() default "Адрес электронной почты должен заканчиваться на 'gmail.com' и содержать @.";
 
     Class<?>[] groups() default {};
 

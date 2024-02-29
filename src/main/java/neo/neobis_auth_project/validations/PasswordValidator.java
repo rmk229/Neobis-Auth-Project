@@ -7,7 +7,7 @@ public class PasswordValidator implements ConstraintValidator<PasswordValidation
 
     @Override
     public boolean isValid(String password, ConstraintValidatorContext context) {
-        return password != null && password.length() >= 6 && containsAlphabeticAndNumericCharacters(password);
+        return password != null && password.length() >= 8 && containsAlphabeticAndNumericCharacters(password);
     }
 
     private boolean containsAlphabeticAndNumericCharacters(String password) {
