@@ -40,9 +40,10 @@ public class UserServiceImpl implements UserService {
         }
         User user = new User();
         user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(Role.USER);
-        userRepository.save(user);
+        if(request.getPassword().equals(request.getVerifyPassword())) {
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+            user.setRole(Role.USER);
+            userRepository.save(user);
         log.info("Пользователь успешно сохранен с идентификатором:" + user.getEmail());
         String token = jwtService.generateToken(user);
 
@@ -54,6 +55,7 @@ public class UserServiceImpl implements UserService {
                 user.getEmail(),
                 user.getRole()
         );
+        } throw new BadCredentialException("Не совпадают пароль и подтверждение пароля.");
     }
 
     @Override

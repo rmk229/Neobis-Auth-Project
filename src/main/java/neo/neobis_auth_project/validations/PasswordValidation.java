@@ -14,7 +14,7 @@ import static java.lang.annotation.ElementType.*;
 @Constraint(validatedBy = PasswordValidator.class)
 @Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE})
 public @interface PasswordValidation {
-    String message() default "Пароль должен содержать не менее 8 символов и состоять из букв,одной заглавной буквы и одного символа";
+    String message() default "Пароль должен содержать не менее 8 и не более 15 символов, включать в себя буквы (в том числе хотя бы одну заглавную), цифры от 0 до 9, и, по меньшей мере, один специальный символ.";
 
     Class<?>[] groups() default {};
 

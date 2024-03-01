@@ -16,9 +16,11 @@ public class SignUpRequest {
     private String email;
     @PasswordValidation
     private String password;
+    private String verifyPassword;
 
-    public SignUpRequest(String email, String password) {
+    public SignUpRequest(String email, String password, String verifyPassword) {
         this.email = email;
         this.password = password;
+        this.verifyPassword = verifyPassword;
     }
 }
