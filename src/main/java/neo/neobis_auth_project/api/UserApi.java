@@ -31,4 +31,20 @@ public class UserApi {
     public AuthenticationSignUpResponse signUp(@RequestBody @Valid SignUpRequest signUpRequest) {
         return userService.signUp(signUpRequest);
     }
+
+    @PostMapping("/requestPasswordReset")
+    @Operation(summary = "Запрос на сброс пароля", description = "Отправка запроса на сброс пароля по электронной почте")
+    public void requestPasswordReset(@RequestParam("email") String email) {
+        userService.requestPasswordReset(email);
+    }
+
+    @PostMapping("/resetPassword")
+    @Operation(summary = "Сброс пароля", description = "Сброс пароля с использованием сгенерированного токена")
+    public void resetPassword(
+            @RequestParam("email") String email,
+            @RequestParam("resetToken") String resetToken,
+            @RequestParam("newPassword") String newPassword
+    ) {
+        userService.resetPassword(email, resetToken, newPassword);
+    }
 }

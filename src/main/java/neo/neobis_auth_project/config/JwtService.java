@@ -3,6 +3,7 @@ package neo.neobis_auth_project.config;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +21,7 @@ public class JwtService {
 
     private final String TOKEN_USERNAME = "username";
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails, long linkExpirationTimeMs) {
         return JWT.create()
                 .withClaim(TOKEN_USERNAME, userDetails.getUsername())
                 .withIssuedAt(new Date())
@@ -33,5 +34,17 @@ public class JwtService {
                 JWT.require(Algorithm.HMAC256(SECRET_KEY)).build();
         DecodedJWT decodedJWT = jwtVerifier.verify(token);
         return decodedJWT.getClaim(TOKEN_USERNAME).asString();
+    }
+
+    public boolean isValidToken(String token) {
+        try {
+            JWTVerifier jwtVerifier =
+                    JWT.require(Algorithm.HMAC256(SECRET_KEY)).build();
+            jwtVerifier.verify(token);
+            return true;
+        } catch (JWTVerificationException e) {
+            // Token verification failed
+            return false;
+        }
     }
 }
