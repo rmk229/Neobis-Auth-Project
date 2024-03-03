@@ -5,10 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import neo.neobis_auth_project.config.JwtService;
 import neo.neobis_auth_project.config.senderConfig.EmailSenderConfig;
-import neo.neobis_auth_project.dto.AuthenticationSignInResponse;
-import neo.neobis_auth_project.dto.AuthenticationSignUpResponse;
-import neo.neobis_auth_project.dto.SignInRequest;
-import neo.neobis_auth_project.dto.SignUpRequest;
+import neo.neobis_auth_project.dto.*;
 import neo.neobis_auth_project.entity.User;
 import neo.neobis_auth_project.enums.Role;
 import neo.neobis_auth_project.exceptions.AlreadyExistException;
@@ -33,13 +30,12 @@ public class UserServiceImpl implements UserService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final EmailSenderConfig emailSenderConfig;
-    private final static long LINK_EXPIRATION_TIME_MS = 5 * 60 * 1000; // 5 minutes in milliseconds
+    private final static long LINK_EXPIRATION_TIME_MS = 5 * 60 * 1000;
 
     @Override
-    public AuthenticationSignUpResponse signUp(SignUpRequest request) {
+    public SignUpResponse signUp(SignUpRequest request) {
         if (userRepository.existsUserByEmail(request.getEmail())) {
-            throw new AlreadyExistException("Пользователь с адресом электронной почты:"
-                    + request.getEmail() + " уже существует");
+            throw new AlreadyExistException("The user with the email address " + request.getEmail() + " already exists.");
         }
 
         User user = new User();
@@ -49,42 +45,37 @@ public class UserServiceImpl implements UserService {
             user.setPassword(passwordEncoder.encode(request.getPassword()));
             user.setRole(Role.USER);
             userRepository.save(user);
-
-            log.info("Пользователь успешно сохранен с идентификатором:" + user.getEmail());
-
-            // Generate token with expiration time
             String token = jwtService.generateToken(user, LINK_EXPIRATION_TIME_MS);
             Context context = new Context();
-            // Send confirmation email with token
-            sendConfirmationEmail(user.getEmail(), token,context);
-
-            return new AuthenticationSignUpResponse(
+            sendRegistryEmail(user.getEmail(), context);
+            log.info("User successfully saved with the identifier:" + user.getEmail());
+            return new SignUpResponse(
                     user.getUserId(),
                     token,
                     user.getEmail(),
                     user.getRole()
             );
         } else {
-            throw new BadCredentialException("Не совпадают пароль и подтверждение пароля.");
+            throw new BadCredentialException("The password and password confirmation do not match.");
         }
     }
     @Override
-    public AuthenticationSignInResponse signIn(SignInRequest signInRequest) {
+    public SignInResponse signIn(SignInRequest signInRequest) {
         User user = userRepository.getUserByEmail(signInRequest.email()).orElseThrow(() ->{
                 log.info("User with email:"+signInRequest.email()+" not found!");
-            return new NotFoundException("Пользователь с адресом электронной почты:" + signInRequest.email() + " не найден!");
+            return new NotFoundException("The user with the email address " + signInRequest.email() + " was not found!");
         });
 
         if (!passwordEncoder.matches(signInRequest.password(), user.getPassword())) {
-            log.info("Недействительный пароль");
-            throw new BadCredentialException("Недействительный пароль");
+            log.info("Invalid password");
+            throw new BadCredentialException("Invalid password");
         }
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             signInRequest.email(),
                             signInRequest.password()));
             String token = jwtService.generateToken(user, LINK_EXPIRATION_TIME_MS);
-            return AuthenticationSignInResponse.builder()
+            return SignInResponse.builder()
                     .id(user.getUserId())
                     .token(token)
                     .email(user.getEmail())
@@ -95,63 +86,47 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void requestPasswordReset(String email) {
-        // Check if the user exists
         User user = userRepository.getUserByEmail(email)
-                .orElseThrow(() -> new NotFoundException("Пользователь с адресом электронной почты:" + email + " не найден"));
+                .orElseThrow(() -> new NotFoundException("The user with the email address: " + email + " was not found."));
 
-        // Generate reset token with expiration time
         String resetToken = jwtService.generateToken(user, LINK_EXPIRATION_TIME_MS);
-
-        // Send password reset email with reset token
-        sendPasswordResetEmail(user.getEmail(), resetToken);
+        Context context = new Context();
+        sendPasswordResetEmail(user.getEmail(), resetToken,context);
     }
 
     @Override
-    public void resetPassword(String email, String resetToken, String newPassword) {
-        // Verify the reset token
-        if (jwtService.isValidToken(resetToken)) {
-            // Update the user's password in the database
-            User user = userRepository.getUserByEmail(email)
-                    .orElseThrow(() -> new NotFoundException("Пользователь с адресом электронной почты:" + email + " не найден"));
+    public void resetPassword(ResetPasswordRequest request) {
+        if (jwtService.isValidToken(request.resetToken())) {
+            User user = userRepository.getUserByEmail(request.email())
+                    .orElseThrow(() -> new NotFoundException("The user with the email address:" + request.email() + " was not found."));
 
-            user.setPassword(passwordEncoder.encode(newPassword));
+            user.setPassword(passwordEncoder.encode(request.newPassword()));
             userRepository.save(user);
-
-            // Optionally, you can generate a new access token for the user after password reset
-            String newAccessToken = jwtService.generateToken(user, LINK_EXPIRATION_TIME_MS);
-
-            // Send notification email about password reset
-            sendPasswordResetNotificationEmail(user.getEmail());
         } else {
-            // Handle invalid or expired reset token
-            throw new BadCredentialForbiddenException("Неверный или просроченный токен для сброса пароля");
+            throw new BadCredentialForbiddenException("Invalid or expired password reset token");
         }
     }
 
-    // Updated helper method to send password reset email
-    private void sendPasswordResetEmail(String email, String resetToken) {
-        Context context = new Context();
-
-        // Add necessary context variables for the email template
+    private void sendRegistryEmail(String email, Context context) {
         context.setVariable("userEmail", email);
-        context.setVariable("resetLink", "https://neobis-auth-project.up.railway.app/swagger-ui/index.html#/User%20Api/signIn" + resetToken);
-        context.setVariable("expirationTime", LINK_EXPIRATION_TIME_MS / (60 * 1000)); // Convert milliseconds to minutes
-
-        // Send email with reset token
-        sendConfirmationEmail(email, "Сброс пароля", context);
+        context.setVariable("registry", "https://neobis-auth-project.up.railway.app/swagger-ui/index.html#/User%20Api/signIn?token=");
+        context.setVariable("resetToken", LINK_EXPIRATION_TIME_MS / (60 * 1000));
+        System.out.println("Reset Link: " + context.getVariable("resetLink"));
+        sendConfirmationEmail(email, "Authorization", context);
     }
 
-    // Helper method to send password reset notification email
-    private void sendPasswordResetNotificationEmail(String email) {
-        Context context = new Context();
-        // Add necessary context variables for the email template
+    private void sendPasswordResetEmail(String email, String resetToken, Context context) {
         context.setVariable("userEmail", email);
-
-        // Send email about successful password reset
-        sendConfirmationEmail(email, "Пароль успешно сброшен", context);
+        context.setVariable("resetLink", "https://neobis-auth-project.up.railway.app/swagger-ui/index.html#/User%20Api/signIn?token="+resetToken);
+        context.setVariable("resetToken", LINK_EXPIRATION_TIME_MS / (60 * 1000));
+        userResetPassword(email, resetToken, context);
     }
 
     private void sendConfirmationEmail(String email, String subject, Context context) {
         emailSenderConfig.sendEmailWithHTMLTemplate(email,"nurmukhamedalymbaiuulu064@gmail.com", subject, "userRegistry", context);
+    }
+
+    private void userResetPassword(String email, String subject, Context context) {
+        emailSenderConfig.sendEmailWithHTMLTemplate(email,"nurmukhamedalymbaiuulu064@gmail.com", subject, "userResetPassword", context);
     }
 }

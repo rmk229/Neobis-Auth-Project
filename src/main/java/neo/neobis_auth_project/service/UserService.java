@@ -1,13 +1,10 @@
 package neo.neobis_auth_project.service;
 
-import neo.neobis_auth_project.dto.AuthenticationSignInResponse;
-import neo.neobis_auth_project.dto.AuthenticationSignUpResponse;
-import neo.neobis_auth_project.dto.SignInRequest;
-import neo.neobis_auth_project.dto.SignUpRequest;
+import neo.neobis_auth_project.dto.*;
 
 public interface UserService {
-    AuthenticationSignUpResponse signUp(SignUpRequest authenticationSignUpRequest);
-    AuthenticationSignInResponse signIn(SignInRequest signInRequest);
+    SignUpResponse signUp(SignUpRequest authenticationSignUpRequest);
+    SignInResponse signIn(SignInRequest signInRequest);
     void requestPasswordReset(String email);
-    void resetPassword(String email, String resetToken, String newPassword);
+    void resetPassword(ResetPasswordRequest request);
 }

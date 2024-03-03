@@ -4,7 +4,7 @@ import lombok.Builder;
 import neo.neobis_auth_project.enums.Role;
 
 @Builder
-public record AuthenticationSignInResponse (
+public record SignInResponse(
     Long id,
     String token,
     String email,
