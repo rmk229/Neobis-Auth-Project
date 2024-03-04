@@ -37,8 +37,9 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.addAllowedOrigin("https://neobis-auth-project.up.railway.app");
-        corsConfiguration.addAllowedHeader("*");
+        corsConfiguration.setAllowCredentials(true);
+        corsConfiguration.addAllowedOrigin("https://neobis-front-auth-mu.vercel.app");
+        corsConfiguration.addAllowedHeader("http://localhost:3000");
         corsConfiguration.addAllowedMethod("*");
         UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
         urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
@@ -49,14 +50,12 @@ public class SecurityConfig {
     SecurityFilterChain SecurityFilterChain(HttpSecurity http) throws Exception {
        http.cors(httpSecurityCorsConfigurer -> corsConfigurationSource())
                 .cors(AbstractHttpConfigurer::disable)
-                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorizeHttpRequests) ->
                         authorizeHttpRequests
+                                .requestMatchers("/api/users/**").permitAll()
                                 .requestMatchers(
-                                        "/",
-                                        "/api/users/**",
                                         "/swagger-ui/**",
-                                        "/v3/api-docs/**")
+                                        "/v3/**")
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated())
