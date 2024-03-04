@@ -109,7 +109,7 @@ public class UserServiceImpl implements UserService {
 
     private void sendRegistryEmail(String email, Context context) {
         context.setVariable("userEmail", email);
-        context.setVariable("registry", "https://neobis-auth-project.up.railway.app/swagger-ui/index.html#/User%20Api/signIn?token=");
+        context.setVariable("registry", "https://neobis-front-auth-mu.vercel.app/");
         context.setVariable("resetToken", LINK_EXPIRATION_TIME_MS / (60 * 1000));
         System.out.println("Reset Link: " + context.getVariable("resetLink"));
         sendConfirmationEmail(email, "Authorization", context);

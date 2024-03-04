@@ -1,35 +1,27 @@
-//package neo.neobis_auth_project.config;
-//
-//import io.swagger.v3.oas.models.Components;
-//import io.swagger.v3.oas.models.OpenAPI;
-//import io.swagger.v3.oas.models.info.Info;
-//import io.swagger.v3.oas.models.security.SecurityRequirement;
-//import io.swagger.v3.oas.models.security.SecurityScheme;
-//import org.springframework.context.annotation.Bean;
-//import org.springframework.context.annotation.Configuration;
-//import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-//
-//import java.util.Collections;
-//
-//@Configuration
-//public class SwaggerConfig implements WebMvcConfigurer {
-//    private static final String API_KEY = "Bearer Token";
-//
-//    @Bean
-//    public OpenAPI customOpenAPI() {
-//        return new OpenAPI()
-//                .components(new Components()
-//                        .addSecuritySchemes(API_KEY, apiKeySecuritySchema()))
-//                .info(new Info().title("Neo-Auth-Project"))
-//                .security(Collections.singletonList(new SecurityRequirement().addList(API_KEY)));
-//    }
-//
-//    public SecurityScheme apiKeySecuritySchema() {
-//        return new SecurityScheme()
-//                .name("Bearer Token")
-//                .description("Please put the token")
-//                .in(SecurityScheme.In.HEADER)
-//                .type(SecurityScheme.Type.HTTP)
-//                .scheme("Bearer");
-//    }
-//}
+package neo.neobis_auth_project.config;
+
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Contact;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.servers.Server;
+
+@OpenAPIDefinition(
+        info = @Info(
+                contact = @Contact(
+                        name = "NeoAuth",
+                        email = "nurmukhamedalymbaiuulu064@gmail.com",
+                        url = "https://neobis-front-auth-mu.vercel.app"
+                ),
+                title = "Lorby API",
+                description = "OpenApi documentation for Lorby Auth Project",
+                version = "0.0.1"
+        ),
+        servers = {
+                @Server(
+                        description = "Railway App",
+                        url = "https://neobis-auth-project.up.railway.app"
+                )
+        }
+)
+public class SwaggerConfig {
+}
