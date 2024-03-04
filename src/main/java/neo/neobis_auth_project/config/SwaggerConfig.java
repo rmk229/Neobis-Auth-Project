@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
 @OpenAPIDefinition(
         info = @Info(
                 contact = @Contact(
-                        name = "NeoAuth",
+                        name = "Neo-Auth-Project",
                         email = "nurmukhamedalymbaiuulu064@gmail.com",
                         url = "https://neobis-front-auth-mu.vercel.app"
                 ),

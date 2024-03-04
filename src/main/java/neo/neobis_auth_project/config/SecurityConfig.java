@@ -52,10 +52,11 @@ public class SecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorizeHttpRequests) ->
                         authorizeHttpRequests
-                                .requestMatchers("/api/users/**").permitAll()
                                 .requestMatchers(
+                                        "/",
+                                        "/api/users/**",
                                         "/swagger-ui/**",
-                                        "/v3/**")
+                                        "/v3/api-docs/**")
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated())
