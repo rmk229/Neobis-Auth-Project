@@ -8,13 +8,15 @@ import neo.neobis_auth_project.enums.Role;
 @Setter
 public class SignUpResponse {
     private Long userId;
-    private String token;
+    private String accessToken;
+    private String refreshToken;
     private String email;
     private Role role;
 
-    public SignUpResponse(Long userId, String token, String email, Role role) {
+    public SignUpResponse(Long userId, String accessToken, String refreshToken, String email, Role role) {
         this.userId = userId;
-        this.token = token;
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
         this.email = email;
         this.role = role;
     }

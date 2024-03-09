@@ -56,6 +56,15 @@ public class GlobalHandlerException {
                 e.getMessage());
     }
 
+    @ExceptionHandler(EmailAlreadyConfirmedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ExceptionResponse emailConfirmed(EmailAlreadyConfirmedException e) {
+        return new ExceptionResponse(
+                HttpStatus.FORBIDDEN,
+                e.getClass().getSimpleName(),
+                e.getMessage());
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ExceptionResponse handleMethodArgumentNotValid(MethodArgumentNotValidException e) {

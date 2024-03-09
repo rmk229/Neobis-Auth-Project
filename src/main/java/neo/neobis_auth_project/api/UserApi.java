@@ -6,7 +6,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import neo.neobis_auth_project.dto.*;
 import neo.neobis_auth_project.service.UserService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,7 +29,7 @@ public class UserApi {
 
     @PostMapping("/signUp")
     @Operation(summary = "Register", description = "Account registration")
-    public SignUpResponse signUp(@RequestBody @Valid SignUpRequest signUpRequest) {
+    public SimpleResponse signUp(@RequestBody @Valid SignUpRequest signUpRequest) {
         return userService.signUp(signUpRequest);
     }
 
@@ -36,9 +40,20 @@ public class UserApi {
     }
 
     @PostMapping("/resetPassword")
-    @Operation(summary = "Password Reset", description = "Password reset using a generated token")
-    public void resetPassword(
-            @RequestBody ResetPasswordRequest request) {
-        userService.resetPassword(request);
+    @Operation(summary = "Password Reset", description = "Password reset using a generated accessToken")
+    public void resetPassword(@RequestParam("token") String token,
+                              @RequestBody ResetPasswordRequest request) {
+        userService.resetPassword(token, request);
+    }
+
+    @PreAuthorize("hasAnyAuthority('USER')")
+    @GetMapping("/getAllUser")
+    public List<UserResponse> getAllUserEmail(){
+        return userService.getGetAllUserEmail();
+    }
+
+    @GetMapping("/confirm-email")
+    public SimpleResponse confirm(@RequestParam("token") String token){
+        return userService.confirmEmail(token);
     }
 }
