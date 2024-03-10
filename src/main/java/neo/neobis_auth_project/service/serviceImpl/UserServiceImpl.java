@@ -15,13 +15,11 @@ import neo.neobis_auth_project.repository.UserRepository;
 import neo.neobis_auth_project.repository.jdbcTemplate.TokenJDBCTemplate;
 import neo.neobis_auth_project.service.UserService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -38,7 +36,7 @@ public class UserServiceImpl implements UserService {
     private final RefreshTokenServiceImpl refreshTokenServiceImpl;
     private final TokenRepository tokenRepository;
     private final TokenJDBCTemplate tokenJDBCTemplate;
-    private final static long LINK_EXPIRATION_TIME_MS = 5 * 60 * 1000;
+    private final static long LINK_EXPIRATION_TIME_MS = 2 * 60 * 1000;
 
     @Override
     public SimpleResponse signUp(SignUpRequest request) {
@@ -112,8 +110,7 @@ public class UserServiceImpl implements UserService {
         String resetToken = jwtService.generateTokenForRequestEmail(user);
         Context context = new Context();
         refreshTokenServiceImpl.saveUserToken(user,resetToken);
-
-        sendPasswordResetEmail(user.getEmail(), resetToken,context);
+        sendPasswordResetEmail(user.getEmail(),context, resetToken);
     }
 
     @Override
@@ -158,11 +155,11 @@ public class UserServiceImpl implements UserService {
         sendConfirmationEmail(email, "Authorization", context);
     }
 
-    private void sendPasswordResetEmail(String email, String resetToken, Context context) {
+    private void sendPasswordResetEmail(String email, Context context, String resetToken) {
         context.setVariable("userEmail", email);
-        context.setVariable("resetLink", "https://neobis-auth-project.up.railway.app/swagger-ui/index.html#/User%20Api/signIn?token="+resetToken);
+        context.setVariable("resetLink", "https://neobis-auth-project.up.railway.app/swagger-ui/index.html#/User%20Api/resetPassword/"+resetToken);
         context.setVariable("resetToken", LINK_EXPIRATION_TIME_MS);
-        userResetPassword(email, resetToken, context);
+        userResetPassword(email, "Reset Password", context);
     }
 
     private void sendConfirmationEmail(String email, String subject, Context context) {
