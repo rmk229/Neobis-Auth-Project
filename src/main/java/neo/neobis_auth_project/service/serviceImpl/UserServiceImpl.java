@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
     private final RefreshTokenServiceImpl refreshTokenServiceImpl;
     private final TokenRepository tokenRepository;
     private final TokenJDBCTemplate tokenJDBCTemplate;
-    private final static long LINK_EXPIRATION_TIME_MS = 2 * 60 * 1000;
+    private final static long LINK_EXPIRATION_TIME_MS = 5 * 60 * 1000;
 
     @Override
     public SimpleResponse signUp(SignUpRequest request) {
