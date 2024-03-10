@@ -40,9 +40,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public SimpleResponse signUp(SignUpRequest request) {
-        if (userRepository.existsUserByEmail(request.getEmail())) {
-            throw new AlreadyExistException("The user with the email address " + request.getEmail() + " already exists.");
-        }
+//        if (userRepository.existsUserByEmail(request.getEmail())) {
+//            throw new AlreadyExistException("The user with the email address " + request.getEmail() + " already exists.");
+//        }
 
         User user = new User();
         user.setEmail(request.getEmail());
@@ -75,9 +75,9 @@ public class UserServiceImpl implements UserService {
                     return new NotFoundException("The user with the email address " + signInRequest.email() + " was not found!");
                 });
 
-        if (!user.isEmailConfirmed()) {
-            throw new BadCredentialException("You must first confirm your email!");
-        }
+//        if (!user.isEmailConfirmed()) {
+//            throw new BadCredentialException("You must first confirm your email!");
+//        }
 
         if (!passwordEncoder.matches(signInRequest.password(), user.getPassword())) {
             log.info("Invalid password");

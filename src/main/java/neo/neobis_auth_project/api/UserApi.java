@@ -23,13 +23,13 @@ public class UserApi {
 
     @PostMapping("/signIn")
     @Operation(summary = "Sign in to your account")
-    public SignInResponse signIn(@RequestBody @Valid SignInRequest signInRequest) {
+    public SignInResponse signIn(@RequestBody SignInRequest signInRequest) {
         return userService.signIn(signInRequest);
     }
 
     @PostMapping("/signUp")
     @Operation(summary = "Register", description = "Account registration")
-    public SimpleResponse signUp(@RequestBody @Valid SignUpRequest signUpRequest) {
+    public SimpleResponse signUp(@RequestBody SignUpRequest signUpRequest) {
         return userService.signUp(signUpRequest);
     }
 
