@@ -33,34 +33,38 @@ public class SecurityConfig {
     private final UserRepository userRepository;
     private final JwtFilter jwtFilter;
 
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowCredentials(true);
+        corsConfiguration.addAllowedOrigin("https://neobis-front-auth-mu.vercel.app");
+        corsConfiguration.addAllowedOrigin("http://localhost:3000");
+        corsConfiguration.addAllowedMethod("*");
+        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
+        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
+        return urlBasedCorsConfigurationSource;
+    }
+
     @Bean
     SecurityFilterChain SecurityFilterChain(HttpSecurity http) throws Exception {
-        return http
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(request -> {
-                    CorsConfiguration corsConfig = new CorsConfiguration();
-                    corsConfig.addAllowedOrigin("https://neobis-front-auth-mu.vercel.app");
-                    corsConfig.addAllowedOrigin("https://localhost:3000");
-                    corsConfig.addAllowedHeader("*");
-                    corsConfig.addAllowedMethod("*");
-                    return corsConfig;
-                }))
-                .authorizeHttpRequests(auth -> auth
+       http.cors(httpSecurityCorsConfigurer -> corsConfigurationSource())
+                .cors(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests((authorizeHttpRequests) ->
+                        authorizeHttpRequests
                                 .requestMatchers(
                                         "/",
                                         "/api/users/**",
                                         "/swagger-ui/**",
                                         "/v3/api-docs/**")
-
-                        .permitAll()
-                        .requestMatchers(
-                                "/api/tokens/**," +
-                                "/api/users/**").hasAnyAuthority("USER","ADMIN")
-                        .anyRequest().permitAll())
+                                .permitAll()
+                                .anyRequest()
+                                .authenticated())
                 .sessionManagement((sessionManagement) ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        http.csrf(AbstractHttpConfigurer::disable);
+        return http.build();
     }
 
     @Bean
