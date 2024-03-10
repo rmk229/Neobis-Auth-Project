@@ -8,6 +8,6 @@ public class EmailValidator implements ConstraintValidator<EmailValidation, Stri
 
         @Override
         public boolean isValid(String email, ConstraintValidatorContext context) {
-            return email != null && email.contains("gmail.com") && email.matches(EMAIL_REGEX);
+            return email != null && email.contains("gmail.com") && email.contains("mail.ru") && email.matches(EMAIL_REGEX);
         }
 }
