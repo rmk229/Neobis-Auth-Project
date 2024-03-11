@@ -1,4 +1,4 @@
-# Lorby
+# Auth Project
 
 ## Overview
 
@@ -14,7 +14,7 @@ This project aims to enhance tutoring efficiency through the development of an a
 
 ## Technologies Used
 
-- **Frontend**: HTML, CSS, JavaScript, React.js
+- **Frontend**: HTML, CSS, TypeScript, React.js
 - **Backend**: Java, Spring boot
 - **Database**: PostgreSql
 - **Authentication**: JSON Web Tokens (JWT)
@@ -31,7 +31,7 @@ This project aims to enhance tutoring efficiency through the development of an a
 
 To get started with VacationTripWebApp, follow these steps:
 
-1. Clone the repository: `git clone https://github.com/Nurikjavakg/Neobis-Auth-Project`
+[//]: # (1. Clone the repository: `git clone https://github.com/Nurikjavakg/Neobis-Auth-Project`)
 2. Install dependencies: `npm install`
 3. Set up environment variables.
 4. Start the backend server: `npm start`

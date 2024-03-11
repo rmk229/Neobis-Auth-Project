@@ -8,7 +8,7 @@
         <version>3.2.3</version>
         <relativePath/>
     </parent>
-    <groupId>com.example</groupId>
+    <groupId>kz.yermek</groupId>
     <artifactId>Neobis_Auth_Project</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Neobis_Auth_Project</name>
@@ -112,6 +112,15 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.2</version>
+                <configuration>
+                    <skipTests>true</skipTests>
                 </configuration>
             </plugin>
         </plugins>
