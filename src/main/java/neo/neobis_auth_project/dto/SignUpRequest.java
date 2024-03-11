@@ -1,26 +1,14 @@
 package neo.neobis_auth_project.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import neo.neobis_auth_project.validations.PasswordValidation;
-import neo.neobis_auth_project.validations.EmailValidation;
+import jakarta.validation.constraints.Email;
+import lombok.*;
 
-@Builder
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 public class SignUpRequest {
-    @EmailValidation
+    @Email
     private String email;
-    @PasswordValidation
     private String password;
     private String confirmPassword;
 
-    public SignUpRequest(String email, String password, String confirmPassword) {
-        this.email = email;
-        this.password = password;
-        this.confirmPassword = confirmPassword;
-    }
 }

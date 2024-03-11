@@ -31,7 +31,7 @@ This project aims to enhance tutoring efficiency through the development of an a
 
 To get started with VacationTripWebApp, follow these steps:
 
-[//]: # (1. Clone the repository: `git clone https://github.com/Nurikjavakg/Neobis-Auth-Project`)
+1. Clone the repository: `git clone https://github.com/rmk229/Neobis-Auth-Project`
 2. Install dependencies: `npm install`
 3. Set up environment variables.
 4. Start the backend server: `npm start`

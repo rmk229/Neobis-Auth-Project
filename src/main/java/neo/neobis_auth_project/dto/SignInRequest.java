@@ -1,13 +1,13 @@
 package neo.neobis_auth_project.dto;
 
+import jakarta.validation.constraints.Email;
 import lombok.Builder;
-import neo.neobis_auth_project.validations.PasswordValidation;
-import neo.neobis_auth_project.validations.EmailValidation;
+
+
 
 @Builder
 public record SignInRequest (
-        @EmailValidation
+        @Email
         String email,
-        @PasswordValidation
         String password
     ){}

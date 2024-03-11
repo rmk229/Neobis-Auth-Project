@@ -23,6 +23,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -50,23 +51,24 @@ public class UserServiceImpl implements UserService {
         if (request.getPassword().equals(request.getConfirmPassword())) {
             user.setPassword(passwordEncoder.encode(request.getPassword()));
             user.setRole(Role.USER);
-            user.setEmailConfirmed(false);
+            user.setEmailConfirmed(true);
             userRepository.save(user);
-            String jwtToken = jwtService.generateTokenWithExpiration(user,LINK_EXPIRATION_TIME_MS);
+            String jwtToken = jwtService.generateTokenWithExpiration(user, LINK_EXPIRATION_TIME_MS);
 
             Context context = new Context();
-            sendRegistryEmail(user.getEmail(),context, jwtToken);
+            sendRegistryEmail(user.getEmail(), context, jwtToken);
 
-            refreshTokenServiceImpl.saveUserToken(user,jwtToken);
+            refreshTokenServiceImpl.saveUserToken(user, jwtToken);
             log.info("User successfully saved with the identifier:" + user.getEmail());
-            return  SimpleResponse.builder()
+            return SimpleResponse.builder()
                     .httpStatus(HttpStatus.OK)
-                    .message("Success! Please, check your email for the confirmation"+ user.getEmail() +"the link access only for 5 min")
+                    .message("Success! Please, check your email for the confirmation" + user.getEmail() + "the link access only for 5 min")
                     .build();
         } else {
             throw new BadCredentialException("The password and password confirmation do not match.");
         }
     }
+
     @Override
     public SignInResponse signIn(SignInRequest signInRequest) {
         User user = userRepository.getUserByEmail(signInRequest.email())
@@ -75,9 +77,6 @@ public class UserServiceImpl implements UserService {
                     return new NotFoundException("The user with the email address " + signInRequest.email() + " was not found!");
                 });
 
-//        if (!user.isEmailConfirmed()) {
-//            throw new BadCredentialException("You must first confirm your email!");
-//        }
 
         if (!passwordEncoder.matches(signInRequest.password(), user.getPassword())) {
             log.info("Invalid password");
@@ -101,7 +100,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
     @Override
     public void requestPasswordReset(String email) {
         User user = userRepository.getUserByEmail(email)
@@ -109,16 +107,16 @@ public class UserServiceImpl implements UserService {
 
         String resetToken = jwtService.generateTokenForRequestEmail(user);
         Context context = new Context();
-        refreshTokenServiceImpl.saveUserToken(user,resetToken);
-        sendPasswordResetEmail(user.getEmail(),context, resetToken);
+        refreshTokenServiceImpl.saveUserToken(user, resetToken);
+        sendPasswordResetEmail(user.getEmail(), context, resetToken);
     }
 
     @Override
     public void resetPassword(String token, ResetPasswordRequest request) {
-       User user = tokenJDBCTemplate.findUserByToken(token)
-               .orElseThrow(() -> new NotFoundException("The user with the token address: " + token + " was not found."));
+        User user = tokenJDBCTemplate.findUserByToken(token)
+                .orElseThrow(() -> new NotFoundException("The user with the token address: " + token + " was not found."));
 
-       if (request.newPassword().equals(request.confirmPassword())){
+        if (request.newPassword().equals(request.confirmPassword())) {
             user.setPassword(passwordEncoder.encode(request.newPassword()));
 
             userRepository.save(user);
@@ -129,7 +127,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public SimpleResponse confirmEmail(String token) {
-        Token confirmationToken = tokenRepository.findByToken(token).orElseThrow(()->new NotFoundException("Token not found"));
+        Token confirmationToken = tokenRepository.findByToken(token).orElseThrow(() -> new NotFoundException("Token not found"));
         if (confirmationToken.getConfirmedAt() != null) {
             throw new AlreadyExistException("Email already confirmed");
         }
@@ -148,25 +146,25 @@ public class UserServiceImpl implements UserService {
         return userRepository.getAllUser();
     }
 
-    private void sendRegistryEmail(String email, Context context,String jwtToken) {
+    private void sendRegistryEmail(String email, Context context, String jwtToken) {
         context.setVariable("userEmail", email);
-        context.setVariable("registry", "https://neobis-front-auth-mu.vercel.app/"+ jwtToken);
+        context.setVariable("registry", "https://neobis-front-auth-kappa.vercel.app/" + jwtToken);
         context.setVariable("resetToken", LINK_EXPIRATION_TIME_MS);
         sendConfirmationEmail(email, "Authorization", context);
     }
 
     private void sendPasswordResetEmail(String email, Context context, String resetToken) {
         context.setVariable("userEmail", email);
-        context.setVariable("resetLink", "https://neobis-auth-project.up.railway.app/swagger-ui/index.html#/User%20Api/resetPassword/"+resetToken);
+        context.setVariable("resetLink", "https://neobis-auth-project-production.up.railway.app/swagger-ui/index.html#/User%20Api/resetPassword/" + resetToken);
         context.setVariable("resetToken", LINK_EXPIRATION_TIME_MS);
         userResetPassword(email, "Reset Password", context);
     }
 
     private void sendConfirmationEmail(String email, String subject, Context context) {
-        emailSenderConfig.sendEmailWithHTMLTemplate(email,"nurmukhamedalymbaiuulu064@gmail.com", subject, "userRegistry", context);
+        emailSenderConfig.sendEmailWithHTMLTemplate(email, "shmanovermek@gmail.com", subject, "userRegistry", context);
     }
 
     private void userResetPassword(String email, String subject, Context context) {
-        emailSenderConfig.sendEmailWithHTMLTemplate(email,"nurmukhamedalymbaiuulu064@gmail.com", subject, "userResetPassword", context);
+        emailSenderConfig.sendEmailWithHTMLTemplate(email, "shmanovermek@gmail.com", subject, "userResetPassword", context);
     }
 }
