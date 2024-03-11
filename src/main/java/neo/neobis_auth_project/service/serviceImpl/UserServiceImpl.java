@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
         if (request.getPassword().equals(request.getConfirmPassword())) {
             user.setPassword(passwordEncoder.encode(request.getPassword()));
             user.setRole(Role.USER);
-            user.setEmailConfirmed(true);
+            user.setEmailConfirmed(false);
             userRepository.save(user);
             String jwtToken = jwtService.generateTokenWithExpiration(user, LINK_EXPIRATION_TIME_MS);
 

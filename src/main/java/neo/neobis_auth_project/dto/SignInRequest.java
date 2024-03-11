@@ -4,10 +4,10 @@ import jakarta.validation.constraints.Email;
 import lombok.Builder;
 
 
-
 @Builder
-public record SignInRequest (
+public record SignInRequest(
         @Email
         String email,
         String password
-    ){}
+) {
+}

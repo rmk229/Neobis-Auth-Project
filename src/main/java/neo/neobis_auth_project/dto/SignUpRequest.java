@@ -4,7 +4,6 @@ import jakarta.validation.constraints.Email;
 import lombok.*;
 
 @Data
-@NoArgsConstructor
 public class SignUpRequest {
     @Email
     private String email;
