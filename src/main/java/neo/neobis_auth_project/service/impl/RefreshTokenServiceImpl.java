@@ -1,4 +1,4 @@
-package neo.neobis_auth_project.service.serviceImpl;
+package neo.neobis_auth_project.service.impl;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.fasterxml.jackson.databind.ObjectMapper;

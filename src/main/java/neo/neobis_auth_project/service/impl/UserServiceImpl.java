@@ -1,4 +1,4 @@
-package neo.neobis_auth_project.service.serviceImpl;
+package neo.neobis_auth_project.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ import java.util.List;
 @Service
 @Slf4j
 @Transactional
-public class UserServiceImpl implements UserService {
+public class  UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
@@ -155,16 +155,16 @@ public class UserServiceImpl implements UserService {
 
     private void sendPasswordResetEmail(String email, Context context, String resetToken) {
         context.setVariable("userEmail", email);
-        context.setVariable("resetLink", "https://neobis-auth-project-production.up.railway.app/swagger-ui/index.html#/User%20Api/resetPassword/" + resetToken);
+        context.setVariable("resetLink", "https://neobis-auth-project-production.up.railway.app/swagger-ui/index.html#/resetPassword/" + resetToken);
         context.setVariable("resetToken", LINK_EXPIRATION_TIME_MS);
         userResetPassword(email, "Reset Password", context);
     }
 
     private void sendConfirmationEmail(String email, String subject, Context context) {
-        emailSenderConfig.sendEmailWithHTMLTemplate(email, "shmanovermek@gmail.com", subject, "userRegistry", context);
+        emailSenderConfig.sendEmailWithHTMLTemplate(email, "rmk.2299@yandex.ru", subject, "userRegistry", context);
     }
 
     private void userResetPassword(String email, String subject, Context context) {
-        emailSenderConfig.sendEmailWithHTMLTemplate(email, "shmanovermek@gmail.com", subject, "userResetPassword", context);
+        emailSenderConfig.sendEmailWithHTMLTemplate(email, "rmk.2299@yandex.ru", subject, "userResetPassword", context);
     }
 }
