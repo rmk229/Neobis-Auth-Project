@@ -38,7 +38,7 @@ public class UserController {
     }
 
     @PostMapping("/reset-password")
-    @Operation(summary = "Password Reset", description = "Password reset using a generated accessToken")
+    @Operation(summary = "Password Reset", description = "Password reset using a generated access token")
     public void resetPassword(@RequestParam("token") String token,
                               @RequestBody ResetPasswordRequest request) {
         userService.resetPassword(token, request);

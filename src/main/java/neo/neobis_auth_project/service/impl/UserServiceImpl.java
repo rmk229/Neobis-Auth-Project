@@ -56,13 +56,13 @@ public class  UserServiceImpl implements UserService {
             String jwtToken = jwtService.generateTokenWithExpiration(user, LINK_EXPIRATION_TIME_MS);
 
             Context context = new Context();
-            sendRegistryEmail(user.getEmail(), context, jwtToken);
+            sendRegistryEmail(user.getEmail(), context);
 
             refreshTokenServiceImpl.saveUserToken(user, jwtToken);
-            log.info("User successfully saved with the identifier:" + user.getEmail());
+            log.info("User successfully saved with the identifier: " + user.getEmail());
             return SimpleResponse.builder()
                     .httpStatus(HttpStatus.OK)
-                    .message("Success! Please, check your email for the confirmation" + user.getEmail() + "the link access only for 5 min")
+                    .message("Success! Please, check your email for the confirmation " + user.getEmail() + " the link access only for 5 minutes")
                     .build();
         } else {
             throw new BadCredentialException("The password and password confirmation do not match.");
@@ -146,25 +146,25 @@ public class  UserServiceImpl implements UserService {
         return userRepository.getAllUser();
     }
 
-    private void sendRegistryEmail(String email, Context context, String jwtToken) {
+    private void sendRegistryEmail(String email, Context context) {
         context.setVariable("userEmail", email);
-        context.setVariable("registry", "https://neobis-front-auth-kappa.vercel.app/" + jwtToken);
+        context.setVariable("registry", "https://neobis-front-auth-kappa.vercel.app/");
         context.setVariable("resetToken", LINK_EXPIRATION_TIME_MS);
         sendConfirmationEmail(email, "Authorization", context);
     }
 
     private void sendPasswordResetEmail(String email, Context context, String resetToken) {
         context.setVariable("userEmail", email);
-        context.setVariable("resetLink", "https://neobis-auth-project-production.up.railway.app/swagger-ui/index.html#/resetPassword/" + resetToken);
+        context.setVariable("resetLink", "https://neobis-auth-project-production.up.railway.app/swagger-ui/index.html#/User%20Api/resetPassword/" + resetToken);
         context.setVariable("resetToken", LINK_EXPIRATION_TIME_MS);
         userResetPassword(email, "Reset Password", context);
     }
 
-    private void sendConfirmationEmail(String email, String subject, Context context) {
-        emailSenderConfig.sendEmailWithHTMLTemplate(email, "rmk.2299@yandex.ru", subject, "userRegistry", context);
+    public void sendConfirmationEmail(String email, String subject, Context context) {
+        emailSenderConfig.sendEmailWithHTMLTemplate(email, "shmanovermek@gmail.com", subject, "userRegistry", context);
     }
 
-    private void userResetPassword(String email, String subject, Context context) {
-        emailSenderConfig.sendEmailWithHTMLTemplate(email, "rmk.2299@yandex.ru", subject, "userResetPassword", context);
+    public void userResetPassword(String email, String subject, Context context) {
+        emailSenderConfig.sendEmailWithHTMLTemplate(email, "shmanovermek@gmail.com", subject, "userResetPassword", context);
     }
 }

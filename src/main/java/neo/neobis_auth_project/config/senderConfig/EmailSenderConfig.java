@@ -3,7 +3,6 @@ package neo.neobis_auth_project.config.senderConfig;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import neo.neobis_auth_project.exceptions.BadCredentialException;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -20,7 +19,6 @@ public class EmailSenderConfig implements EmailSenderService {
     private final TemplateEngine templateEngine;
 
     @Override
-    @SneakyThrows
     public void sendEmailWithHTMLTemplate(String to, String from, String subject, String template, Context context) {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, "UTF-8");
