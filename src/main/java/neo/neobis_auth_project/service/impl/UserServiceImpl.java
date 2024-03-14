@@ -155,7 +155,7 @@ public class  UserServiceImpl implements UserService {
 
     private void sendPasswordResetEmail(String email, Context context, String resetToken) {
         context.setVariable("userEmail", email);
-        context.setVariable("resetLink", "https://neobis-auth-project-production.up.railway.app/swagger-ui/index.html#/User%20Api/resetPassword/" + resetToken);
+        context.setVariable("resetLink", "https://neobis-auth-project-production.up.railway.app/swagger-ui/index.html#/resetPassword/" + resetToken);
         context.setVariable("resetToken", LINK_EXPIRATION_TIME_MS);
         userResetPassword(email, "Reset Password", context);
     }
