@@ -56,7 +56,7 @@ public class  UserServiceImpl implements UserService {
             String jwtToken = jwtService.generateTokenWithExpiration(user, LINK_EXPIRATION_TIME_MS);
 
             Context context = new Context();
-            sendRegistryEmail(user.getEmail(), context);
+            sendRegistryEmail(user.getEmail(), context, jwtToken);
 
             refreshTokenServiceImpl.saveUserToken(user, jwtToken);
             log.info("User successfully saved with the identifier: " + user.getEmail());
@@ -146,9 +146,9 @@ public class  UserServiceImpl implements UserService {
         return userRepository.getAllUser();
     }
 
-    private void sendRegistryEmail(String email, Context context) {
+    private void sendRegistryEmail(String email, Context context, String jwtToken) {
         context.setVariable("userEmail", email);
-        context.setVariable("registry", "https://neobis-front-auth-kappa.vercel.app/");
+        context.setVariable("registry", "https://neobis-front-auth-kappa.vercel.app/" + jwtToken);
         context.setVariable("resetToken", LINK_EXPIRATION_TIME_MS);
         sendConfirmationEmail(email, "Authorization", context);
     }
